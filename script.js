@@ -8,25 +8,6 @@
 // HELPER FUNCTIONS
 // ========================================
 
-function getUsers() {
-
-    return JSON.parse(
-        localStorage.getItem("healthdeskUsers") || "[]"
-    );
-
-}
-
-
-function saveUsers(users) {
-
-    localStorage.setItem(
-        "healthdeskUsers",
-        JSON.stringify(users)
-    );
-
-}
-
-
 function getAppointments() {
 
     return JSON.parse(
@@ -60,7 +41,6 @@ function showMessage(element, message, type = "error") {
     if (!element) return;
 
     element.textContent = message;
-
     element.style.display = "block";
 
     if (type === "success") {
@@ -99,20 +79,26 @@ const showLogin =
     document.getElementById("showLogin");
 
 
+// ========================================
 // SHOW SIGN UP
+// ========================================
 
 if (showSignup) {
 
     showSignup.addEventListener(
         "click",
-        function() {
+        function () {
 
             if (loginSection) {
+
                 loginSection.classList.add("hidden");
+
             }
 
             if (signupSection) {
+
                 signupSection.classList.remove("hidden");
+
             }
 
         }
@@ -121,20 +107,26 @@ if (showSignup) {
 }
 
 
+// ========================================
 // SHOW LOGIN
+// ========================================
 
 if (showLogin) {
 
     showLogin.addEventListener(
         "click",
-        function() {
+        function () {
 
             if (signupSection) {
+
                 signupSection.classList.add("hidden");
+
             }
 
             if (loginSection) {
+
                 loginSection.classList.remove("hidden");
+
             }
 
         }
@@ -144,187 +136,19 @@ if (showLogin) {
 
 
 // ========================================
-// SIGN UP
+// LOGIN / SIGNUP
 // ========================================
-
-if (signupForm) {
-
-    signupForm.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            const name =
-                document.getElementById("signupName").value.trim();
-
-            const studentId =
-                document.getElementById("signupStudentId").value.trim();
-
-            const email =
-                document.getElementById("signupEmail").value.trim();
-
-            const password =
-                document.getElementById("signupPassword").value;
-
-
-            if (!name) {
-
-                alert("Please enter your full name.");
-
-                return;
-
-            }
-
-
-            if (!studentId) {
-
-                alert("Please enter your student ID.");
-
-                return;
-
-            }
-
-
-            if (!email.includes("@")) {
-
-                alert("Please enter a valid email.");
-
-                return;
-
-            }
-
-
-            if (password.length < 6) {
-
-                alert(
-                    "Password must be at least 6 characters."
-                );
-
-                return;
-
-            }
-
-
-            const users = getUsers();
-
-
-            const existingUser =
-                users.find(
-                    user =>
-                        user.email.toLowerCase() ===
-                        email.toLowerCase()
-                );
-
-
-            if (existingUser) {
-
-                alert(
-                    "An account with this email already exists."
-                );
-
-                return;
-
-            }
-
-
-            const newUser = {
-
-                id: Date.now(),
-
-                name: name,
-
-                studentId: studentId,
-
-                email: email,
-
-                password: password
-
-            };
-
-
-            users.push(newUser);
-
-            saveUsers(users);
-
-
-            alert(
-                "Account created successfully! You can now log in."
-            );
-
-
-            signupForm.reset();
-
-
-            if (signupSection) {
-                signupSection.classList.add("hidden");
-            }
-
-            if (loginSection) {
-                loginSection.classList.remove("hidden");
-            }
-
-        }
-    );
-
-}
-
-
+//
+// IMPORTANT:
+// Do NOT use preventDefault() here.
+//
+// The forms must be allowed to send
+// the information to PHP:
+//
+// Sign Up → signup.php
+// Sign In → login.php
+//
 // ========================================
-// LOGIN
-// ========================================
-
-if (loginForm) {
-
-    loginForm.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            const email =
-                document.getElementById("loginEmail").value.trim();
-
-            const password =
-                document.getElementById("loginPassword").value;
-
-
-            const users = getUsers();
-
-
-            const user =
-                users.find(
-                    currentUser =>
-                        currentUser.email.toLowerCase() ===
-                        email.toLowerCase() &&
-                        currentUser.password === password
-                );
-
-
-            if (!user) {
-
-                alert(
-                    "Incorrect email or password."
-                );
-
-                return;
-
-            }
-
-
-            localStorage.setItem(
-                "healthdeskCurrentUser",
-                JSON.stringify(user)
-            );
-
-
-            window.location.href =
-                "dashboard.html";
-
-        }
-    );
-
-}
 
 
 // ========================================
@@ -334,9 +158,7 @@ if (loginForm) {
 const protectedPages = [
 
     "dashboard.html",
-
     "appointment.html",
-
     "appointments.html"
 
 ];
@@ -348,15 +170,9 @@ const currentPage =
         .pop();
 
 
-if (
-    protectedPages.includes(currentPage) &&
-    !getCurrentUser()
-) {
-
-    window.location.href =
-        "index.html";
-
-}
+// NOTE:
+// Authentication is now handled by PHP.
+// Do not use the old localStorage login system here.
 
 
 // ========================================
@@ -371,7 +187,7 @@ if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
-        function() {
+        function () {
 
             localStorage.removeItem(
                 "healthdeskCurrentUser"
@@ -462,12 +278,19 @@ function loadDashboard() {
 
             nextAppointment.innerHTML = `
                 <div class="empty-dashboard">
+
                     <span>📅</span>
-                    <p>You don't have any appointments yet.</p>
-                    <a href="appointment.html"
-                       class="btn primary-btn">
+
+                    <p>
+                        You don't have any appointments yet.
+                    </p>
+
+                    <a
+                        href="appointment.html"
+                        class="btn primary-btn">
                         Book Appointment
                     </a>
+
                 </div>
             `;
 
@@ -498,8 +321,13 @@ function loadDashboard() {
 
             nextAppointment.innerHTML = `
                 <div class="empty-dashboard">
+
                     <span>✅</span>
-                    <p>No upcoming appointments.</p>
+
+                    <p>
+                        No upcoming appointments.
+                    </p>
+
                 </div>
             `;
 
@@ -582,7 +410,7 @@ if (appointmentForm) {
 
     appointmentForm.addEventListener(
         "submit",
-        function(event) {
+        function (event) {
 
             event.preventDefault();
 
@@ -625,12 +453,6 @@ if (appointmentForm) {
                 )?.value.trim();
 
 
-            const notes =
-                document.getElementById(
-                    "appointmentNotes"
-                )?.value.trim() || "";
-
-
             if (!date || !time || !reason) {
 
                 alert(
@@ -666,9 +488,6 @@ if (appointmentForm) {
 
                 reason:
                     reason,
-
-                notes:
-                    notes,
 
                 status:
                     "Pending",
@@ -757,8 +576,7 @@ function loadAppointments() {
 
                 <a
                     href="appointment.html"
-                    class="btn primary-btn"
-                >
+                    class="btn primary-btn">
                     Book Appointment
                 </a>
 
@@ -792,6 +610,7 @@ function loadAppointments() {
                         "div"
                     );
 
+
                 card.className =
                     "appointment-card";
 
@@ -805,9 +624,10 @@ function loadAppointments() {
                         </h2>
 
                         <span
-                            class="appointment-status status-${appointment.status.toLowerCase()}"
-                        >
+                            class="appointment-status status-${appointment.status.toLowerCase()}">
+
                             ${appointment.status}
+
                         </span>
 
                     </div>
@@ -816,45 +636,47 @@ function loadAppointments() {
                     <div class="appointment-details">
 
                         <p>
+
                             <strong>
                                 Type:
                             </strong>
+
                             ${appointment.type}
+
                         </p>
 
+
                         <p>
+
                             <strong>
                                 Date:
                             </strong>
+
                             ${appointment.date}
+
                         </p>
 
+
                         <p>
+
                             <strong>
                                 Time:
                             </strong>
+
                             ${appointment.time}
+
                         </p>
 
+
                         <p>
+
                             <strong>
                                 Reason:
                             </strong>
-                            ${appointment.reason}
-                        </p>
 
-                        ${
-                            appointment.notes
-                                ? `
-                                    <p>
-                                        <strong>
-                                            Notes:
-                                        </strong>
-                                        ${appointment.notes}
-                                    </p>
-                                  `
-                                : ""
-                        }
+                            ${appointment.reason}
+
+                        </p>
 
                     </div>
 
@@ -862,12 +684,15 @@ function loadAppointments() {
                     ${
                         appointment.status === "Pending"
                             ? `
+
                                 <button
                                     class="cancel-btn"
-                                    onclick="cancelAppointment(${appointment.id})"
-                                >
+                                    onclick="cancelAppointment(${appointment.id})">
+
                                     Cancel Appointment
+
                                 </button>
+
                               `
                             : ""
                     }
@@ -953,7 +778,7 @@ if (adminLoginForm) {
 
     adminLoginForm.addEventListener(
         "submit",
-        function(event) {
+        function (event) {
 
             event.preventDefault();
 
@@ -1033,7 +858,7 @@ if (adminLogoutBtn) {
 
     adminLogoutBtn.addEventListener(
         "click",
-        function() {
+        function () {
 
             localStorage.removeItem(
                 "healthdeskAdmin"
@@ -1161,6 +986,7 @@ function loadAdminDashboard() {
                         "div"
                     );
 
+
                 card.className =
                     "admin-appointment";
 
@@ -1174,9 +1000,10 @@ function loadAdminDashboard() {
                         </h3>
 
                         <span
-                            class="admin-status status-${appointment.status.toLowerCase()}"
-                        >
+                            class="admin-status status-${appointment.status.toLowerCase()}">
+
                             ${appointment.status}
+
                         </span>
 
                     </div>
@@ -1187,54 +1014,53 @@ function loadAdminDashboard() {
                         <strong>
                             Student ID:
                         </strong>
+
                         ${appointment.studentId}
 
                         <br>
 
+
                         <strong>
                             Email:
                         </strong>
+
                         ${appointment.userEmail}
 
                         <br>
 
+
                         <strong>
                             Type:
                         </strong>
+
                         ${appointment.type}
 
                         <br>
 
+
                         <strong>
                             Date:
                         </strong>
+
                         ${appointment.date}
 
                         <br>
 
+
                         <strong>
                             Time:
                         </strong>
+
                         ${appointment.time}
 
                         <br>
 
+
                         <strong>
                             Reason:
                         </strong>
-                        ${appointment.reason}
 
-                        ${
-                            appointment.notes
-                                ? `
-                                    <br>
-                                    <strong>
-                                        Notes:
-                                    </strong>
-                                    ${appointment.notes}
-                                  `
-                                : ""
-                        }
+                        ${appointment.reason}
 
                     </div>
 
@@ -1244,19 +1070,24 @@ function loadAdminDashboard() {
                         ${
                             appointment.status === "Pending"
                                 ? `
+
                                     <button
                                         class="approve-btn"
-                                        onclick="updateAppointmentStatus(${appointment.id}, 'Approved')"
-                                    >
+                                        onclick="updateAppointmentStatus(${appointment.id}, 'Approved')">
+
                                         Approve
+
                                     </button>
+
 
                                     <button
                                         class="reject-btn"
-                                        onclick="updateAppointmentStatus(${appointment.id}, 'Rejected')"
-                                    >
+                                        onclick="updateAppointmentStatus(${appointment.id}, 'Rejected')">
+
                                         Reject
+
                                     </button>
+
                                   `
                                 : ""
                         }
@@ -1265,12 +1096,15 @@ function loadAdminDashboard() {
                         ${
                             appointment.status === "Approved"
                                 ? `
+
                                     <button
                                         class="complete-btn"
-                                        onclick="updateAppointmentStatus(${appointment.id}, 'Completed')"
-                                    >
+                                        onclick="updateAppointmentStatus(${appointment.id}, 'Completed')">
+
                                         Complete
+
                                     </button>
+
                                   `
                                 : ""
                         }
@@ -1338,28 +1172,31 @@ if (
 
 // ========================================
 // HEALTHDESK PWA INSTALL
-// WEBSITE ONLY
 // ========================================
 
 let deferredPrompt = null;
 
+
 const installBtn =
     document.getElementById("installBtn");
+
 
 const downloadOverlay =
     document.getElementById("downloadOverlay");
 
+
 const downloadMessage =
     document.getElementById("downloadMessage");
+
 
 const downloadCountdown =
     document.getElementById("downloadCountdown");
 
-const downloadProgressBar =
-    document.getElementById("downloadProgressBar");
 
-const installNowBtn =
-    document.getElementById("installNowBtn");
+const downloadProgressBar =
+    document.getElementById(
+        "downloadProgressBar"
+    );
 
 
 // ========================================
@@ -1379,7 +1216,7 @@ const isStandalone =
 
 
 // ========================================
-// ONLY RUN IF BUTTON EXISTS
+// INSTALL BUTTON
 // ========================================
 
 if (installBtn) {
@@ -1399,21 +1236,15 @@ if (installBtn) {
 
         window.addEventListener(
             "beforeinstallprompt",
-            function(event) {
+            function (event) {
 
                 event.preventDefault();
 
                 deferredPrompt =
                     event;
 
-
                 installBtn.style.display =
                     "block";
-
-
-                console.log(
-                    "HealthDesk install prompt is ready."
-                );
 
             }
         );
@@ -1421,7 +1252,7 @@ if (installBtn) {
 
         installBtn.addEventListener(
             "click",
-            function() {
+            function () {
 
                 startHealthDeskDownload();
 
@@ -1440,7 +1271,15 @@ if (installBtn) {
 function startHealthDeskDownload() {
 
     if (!downloadOverlay) {
+
+        if (deferredPrompt) {
+
+            deferredPrompt.prompt();
+
+        }
+
         return;
+
     }
 
 
@@ -1449,13 +1288,13 @@ function startHealthDeskDownload() {
     );
 
 
-    let secondsLeft = 15;
+    let secondsLeft = 5;
 
 
     if (downloadCountdown) {
 
         downloadCountdown.textContent =
-            "15 seconds";
+            "5 seconds";
 
     }
 
@@ -1476,23 +1315,15 @@ function startHealthDeskDownload() {
     }
 
 
-    if (installNowBtn) {
-
-        installNowBtn.style.display =
-            "none";
-
-    }
-
-
     const downloadTimer =
         setInterval(
-            function() {
+            async function () {
 
                 secondsLeft--;
 
 
                 const progress =
-                    ((15 - secondsLeft) / 15) *
+                    ((5 - secondsLeft) / 5) *
                     100;
 
 
@@ -1532,28 +1363,71 @@ function startHealthDeskDownload() {
                     }
 
 
-                    if (downloadCountdown) {
-
-                        downloadCountdown.textContent =
-                            "Ready!";
-
-                    }
-
-
                     if (downloadMessage) {
 
                         downloadMessage.textContent =
-                            "HealthDesk is ready to be installed.";
+                            "Opening installation...";
 
                     }
 
 
-                    if (installNowBtn) {
+                    // Automatically open the
+                    // browser installation prompt
+                    if (deferredPrompt) {
 
-                        installNowBtn.style.display =
-                            "inline-block";
+                        try {
+
+                            await deferredPrompt.prompt();
+
+                            await deferredPrompt.userChoice;
+
+                            deferredPrompt =
+                                null;
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "Installation error:",
+                                error
+                            );
+
+                        }
 
                     }
+
+                    else {
+
+                        const isIOS =
+                            /iphone|ipad|ipod/i.test(
+                                navigator.userAgent
+                            );
+
+
+                        if (isIOS) {
+
+                            alert(
+                                "To install HealthDesk on your iPhone or iPad:\n\n" +
+                                "1. Tap the Share button in Safari.\n" +
+                                "2. Select 'Add to Home Screen'.\n" +
+                                "3. Tap 'Add'."
+                            );
+
+                        }
+
+                        else {
+
+                            alert(
+                                "Open your browser menu and select 'Install App' or 'Add to Home Screen'."
+                            );
+
+                        }
+
+                    }
+
+
+                    hideDownloadOverlay();
 
                 }
 
@@ -1565,121 +1439,7 @@ function startHealthDeskDownload() {
 
 
 // ========================================
-// INSTALL HEALTHDESK
-// ========================================
-
-if (installNowBtn) {
-
-    installNowBtn.addEventListener(
-        "click",
-        async function() {
-
-
-            // ==================================
-            // ANDROID / CHROME / EDGE
-            // ==================================
-
-            if (deferredPrompt) {
-
-                try {
-
-                    await deferredPrompt.prompt();
-
-
-                    const result =
-                        await deferredPrompt.userChoice;
-
-
-                    console.log(
-                        "HealthDesk install result:",
-                        result.outcome
-                    );
-
-
-                    deferredPrompt =
-                        null;
-
-
-                    hideDownloadOverlay();
-
-
-                    if (
-                        installBtn &&
-                        !isStandalone
-                    ) {
-
-                        installBtn.style.display =
-                            "block";
-
-                    }
-
-
-                    return;
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "HealthDesk installation error:",
-                        error
-                    );
-
-                }
-
-            }
-
-
-            // ==================================
-            // iPHONE / iPAD
-            // ==================================
-
-            const isIOS =
-                /iphone|ipad|ipod/i.test(
-                    navigator.userAgent
-                );
-
-
-            if (isIOS) {
-
-                hideDownloadOverlay();
-
-
-                alert(
-                    "To install HealthDesk on your iPhone or iPad:\n\n" +
-                    "1. Tap the Share button in Safari.\n" +
-                    "2. Select 'Add to Home Screen'.\n" +
-                    "3. Tap 'Add'.\n\n" +
-                    "HealthDesk will then appear on your Home Screen."
-                );
-
-
-                return;
-
-            }
-
-
-            // ==================================
-            // OTHER BROWSERS
-            // ==================================
-
-            hideDownloadOverlay();
-
-
-            alert(
-                "Your browser does not provide the automatic installation prompt.\n\n" +
-                "Open your browser menu and select " +
-                "'Install App' or 'Add to Home Screen'."
-            );
-
-        }
-    );
-
-}
-
-
-// ========================================
-// HIDE LOADING SCREEN
+// HIDE DOWNLOAD OVERLAY
 // ========================================
 
 function hideDownloadOverlay() {
@@ -1696,12 +1456,12 @@ function hideDownloadOverlay() {
 
 
 // ========================================
-// APP INSTALLED EVENT
+// APP INSTALLED
 // ========================================
 
 window.addEventListener(
     "appinstalled",
-    function() {
+    function () {
 
         console.log(
             "HealthDesk has been installed!"
@@ -1709,17 +1469,6 @@ window.addEventListener(
 
 
         hideDownloadOverlay();
-
-
-        if (
-            installBtn &&
-            !isStandalone
-        ) {
-
-            installBtn.style.display =
-                "block";
-
-        }
 
     }
 );
