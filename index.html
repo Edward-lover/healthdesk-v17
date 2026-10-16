@@ -8,7 +8,6 @@
     <title>HealthDesk - School Clinic</title>
 
     <link rel="stylesheet" href="style.css">
-
     <link rel="manifest" href="manifest.json">
 
     <meta name="theme-color" content="#2e8b57">
@@ -45,7 +44,11 @@
     <!-- MAIN -->
     <main class="auth-container">
 
-        <!-- LOGIN -->
+
+        <!-- ========================= -->
+        <!-- SIGN IN -->
+        <!-- ========================= -->
+
         <section id="loginSection" class="auth-card">
 
             <h2>Welcome Back!</h2>
@@ -54,10 +57,13 @@
                 Sign in to your HealthDesk account
             </p>
 
+
+            <!-- LOGIN FORM -->
             <form
                 id="loginForm"
                 action="login.php"
                 method="POST">
+
 
                 <!-- USERNAME -->
                 <div class="form-group">
@@ -100,7 +106,7 @@
                 </p>
 
 
-                <!-- LOGIN BUTTON -->
+                <!-- SIGN IN BUTTON -->
                 <button
                     type="submit"
                     class="auth-btn">
@@ -110,7 +116,7 @@
             </form>
 
 
-            <!-- SWITCH TO SIGNUP -->
+            <!-- GO TO SIGN UP -->
             <p class="switch-text">
 
                 Don't have an account?
@@ -128,7 +134,10 @@
 
 
 
+        <!-- ========================= -->
         <!-- SIGN UP -->
+        <!-- ========================= -->
+
         <section
             id="signupSection"
             class="auth-card hidden">
@@ -140,6 +149,7 @@
             </p>
 
 
+            <!-- SIGNUP FORM -->
             <form
                 id="signupForm"
                 action="signup.php"
@@ -274,7 +284,7 @@
                 </p>
 
 
-                <!-- SIGN UP BUTTON -->
+                <!-- CREATE ACCOUNT BUTTON -->
                 <button
                     type="submit"
                     class="auth-btn">
@@ -284,7 +294,7 @@
             </form>
 
 
-            <!-- SWITCH TO LOGIN -->
+            <!-- GO TO SIGN IN -->
             <p class="switch-text">
 
                 Already have an account?
@@ -301,6 +311,7 @@
         </section>
 
     </main>
+
 
 
     <!-- DOWNLOAD OVERLAY -->
@@ -332,6 +343,7 @@
         </div>
 
     </div>
+
 
 
     <!-- JAVASCRIPT -->
